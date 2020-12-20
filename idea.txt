@@ -1,0 +1,69 @@
+Nguyen Hoang Viet - server
+Le Ba Cong - client
+Nhom : Ten gi cung duoc
+1 byte -> 128
+
+Package (Sent):
+	4 byte(128) : message length
+	4 byte(128) : senderID
+	4 byte(128) : destinationID
+	1 byte : type of message(Group, Upload, Download, Message) 
+	(data)
+
+Package (Recv):
+	4 byte(128) : message length
+	4 byte(128) : senderID
+	4 byte(128) : groupID
+	1 byte : type of message(Group, Upload, Download, Message) 
+	(data)
+
+
+
+Single: S recvId Message
+Group : G groupID message
+Upload : S recvID UPLOAD (fileName)
+		 G recvID UPLOAD (fileName)
+Download: S recvID DOWNLOAD (fileID)
+		  G groupID DOWNLOAD (fileID)
+
+Cmd : G 0 CREATE (id)
+	  G destID LEAVE
+	  S uid LIST
+	  G gid LIST
+
+Upload/Download: 8 byte(128) fileSize + data
+
+UserID: 0
+Server : 410 Invalid ID
+UserID : 1
+Server : 210 Authenticated
+(User 2 logged in)
+Client : G 0 CREATE 0
+Server : 441 Invalid ID to create group
+Client : G 0 CREATE 1
+Client : G 1 JOIN
+Server : Message from 0 in group 1 : Joined group
+Client : G 2 Halo
+Server : 412 Invalid group ID
+Client : G 1 Halo
+Server : Message from 1 in group 2 : Halo
+Client : G 0 CREATE 2
+Client : G 2 Halo
+Server : Message from 0: You havent joined this group yet
+Client : S 2 Halo
+Client : S 3 Halo
+Server : Message from 0: 414 Invalid user ID
+Client : G 3 Halo
+Server : Message from 0: 412 Invalid group ID
+Client : S 1 UPLOAD notExsist
+Server : File not available
+Client : S 1 UPLOAD exsist
+Client : S 1 DOWNLOAD 0
+Client : S 1 DOWNLOAD 1
+Server : Invalid index
+Client : S 2 Voice message
+(User 2 : S 1 ACK)
+(Voice message)
+
+Client : S 2 TER
+Server : Conversation Ended
